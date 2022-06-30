@@ -1,2 +1,2 @@
 # workbc-firebase-token-cron
-Monthly cron job for checking firebase token staleness in the mobile database.
+Monthly cron job for cleaning up the firebase tokens in the mobile app DB.
