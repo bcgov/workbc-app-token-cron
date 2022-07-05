@@ -1,0 +1,139 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: workbc-firebase-token-cron
+labels:
+  template: workbc-firebase-token-cron
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}${SUFFIX} 
+    labels:
+      app: workbc-firebase-token-cron
+      app.kubernetes.io/component: workbc-firebase-token-cron
+      app.openshift.io/runtime: nodejs
+  spec:
+    replicas: 2
+    selector:
+      deploymentconfig: ${NAME}${SUFFIX}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          deploymentconfig: ${NAME}${SUFFIX}
+      spec:
+        containers:
+          - name: ${NAME}
+            image: ${NAME}:${TAG}
+            ports:
+              - containerPort: 8000
+                protocol: TCP
+            env:
+              - name: PGUSER
+                value: ${PGUSER}
+              - name: PGHOST
+                value: ${PGHOST}
+              - name: PGPASSWORD
+                value: ${PGPASSWORD}
+              - name: PGPORT
+                value: ${PGPORT}
+              - name: NOTIFICATIONS_API_URL
+                value: ${NOTIFICATIONS_API_URL}
+              - name: NOTIFICATIONS_API_USER
+                value: ${NOTIFICATIONS_API_USER}
+              - name: NOTIFICATIONS_API_PASS
+                value: ${NOTIFICATIONS_API_PASS}
+            resources:
+              limits:
+                cpu: '150m'
+              requests:
+                cpu: '100m'
+    test: false  
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${NAME}:${TAG}
+          namespace: ${IMAGE_NAMESPACE}
+      type: ImageChange
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}${SUFFIX}
+  spec:
+    ports:
+    - name: 8000-tcp
+      port: 8000
+      protocol: TCP
+      targetPort: 8000
+    selector:
+      deploymentconfig: ${NAME}${SUFFIX}
+parameters:
+- description: A name used for all objects
+  displayName: Name
+  name: NAME
+  required: true
+  value: workbc-firebase-token-cron
+- description: A name suffix used for all objects
+  displayName: Suffix
+  name: SUFFIX
+  required: false
+  value: ''
+- description: Tag used for the image tags
+  displayName: tag
+  name: TAG
+  required: true
+  value: latest
+- description: The namespace of the OS project containing the imagestreams
+  displayName: Image Namespace
+  name: IMAGE_NAMESPACE
+  required: true
+  value: myproject-tools
+- description: The image name
+  displayName: Image Name
+  name: IMAGE_NAME
+  required: true
+  value: workbc-firebase-token-cron
+- description: Postgres User
+  displayName: Postgres User
+  name: PGUSER
+  required: true
+  value: ''
+- description: Postgres Host
+  displayName: Postgres Host
+  name: PGHOST
+  required: true
+  value: ''
+- description: Postgres Password
+  displayName: Postgres Password
+  name: PGPASSWORD
+  required: true
+  value: ''
+- description: Postgres Port
+  displayName: Postgres Port
+  name: PGPORT
+  required: true
+  value: ''
+- description: URL for the mobile app notifications api
+  displayName: Notifications URL
+  name: NOTIFICATIONS_API_URL
+  required: true
+  value: ''
+- description: Username for the mobile app notifications api
+  displayName: Notifications User
+  name: NOTIFICATIONS_API_USER
+  required: true
+  value: ''
+- description: Password for the mobile app notifications api
+  displayName: Notifications Password
+  name: NOTIFICATIONS_API_PASS
+  required: true
+  value: ''
