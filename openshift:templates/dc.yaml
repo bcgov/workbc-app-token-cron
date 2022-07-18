@@ -2,9 +2,9 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: workbc-firebase-token-cron
+  name: workbc-app-token-cron
 labels:
-  template: workbc-firebase-token-cron
+  template: workbc-app-token-cron
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
@@ -12,8 +12,8 @@ objects:
     creationTimestamp: null
     name: ${NAME}${SUFFIX} 
     labels:
-      app: workbc-firebase-token-cron
-      app.kubernetes.io/component: workbc-firebase-token-cron
+      app: workbc-app-token-cron
+      app.kubernetes.io/component: workbc-app-token-cron
       app.openshift.io/runtime: nodejs
   spec:
     replicas: 2
@@ -81,7 +81,7 @@ parameters:
   displayName: Name
   name: NAME
   required: true
-  value: workbc-firebase-token-cron
+  value: workbc-app-token-cron
 - description: A name suffix used for all objects
   displayName: Suffix
   name: SUFFIX
@@ -101,7 +101,7 @@ parameters:
   displayName: Image Name
   name: IMAGE_NAME
   required: true
-  value: workbc-firebase-token-cron
+  value: workbc-app-token-cron
 - description: Postgres User
   displayName: Postgres User
   name: PGUSER
