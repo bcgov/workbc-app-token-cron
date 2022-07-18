@@ -105,35 +105,35 @@ parameters:
 - description: Postgres User
   displayName: Postgres User
   name: PGUSER
-  required: true
+  required: false
   value: ''
 - description: Postgres Host
   displayName: Postgres Host
   name: PGHOST
-  required: true
+  required: false
   value: ''
 - description: Postgres Password
   displayName: Postgres Password
   name: PGPASSWORD
-  required: true
+  required: false
   value: ''
 - description: Postgres Port
   displayName: Postgres Port
   name: PGPORT
-  required: true
+  required: false
   value: ''
 - description: URL for the mobile app notifications api
   displayName: Notifications URL
   name: NOTIFICATIONS_API_URL
-  required: true
+  required: false
   value: ''
 - description: Username for the mobile app notifications api
   displayName: Notifications User
   name: NOTIFICATIONS_API_USER
-  required: true
+  required: false
   value: ''
 - description: Password for the mobile app notifications api
   displayName: Notifications Password
   name: NOTIFICATIONS_API_PASS
-  required: true
+  required: false
   value: ''
