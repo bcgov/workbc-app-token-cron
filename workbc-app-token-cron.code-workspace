@@ -1,0 +1,26 @@
+{
+    "extensions": {
+        "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    },
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "[javascript][json][jsonc][typescript]": {
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
+            "editor.tabSize": 4
+        },
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true,
+            "source.organizeImports": true
+        },
+        "editor.formatOnSave": true,
+        "editor.rulers": [150],
+        "javascript.format.semicolons": "remove",
+        "javascript.preferences.quoteStyle": "double",
+        "typescript.format.semicolons": "remove",
+        "typescript.preferences.quoteStyle": "double"
+    }
+}

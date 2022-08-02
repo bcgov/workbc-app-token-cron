@@ -1,14 +1,20 @@
-const { Pool } = require("pg")
+import { Pool } from "pg"
+
+declare module "pg" {
+    class PoolClient {
+        lastQuery: any[]
+    }
+}
 
 const pool = new Pool({
     user: process.env.PGUSER,
     host: process.env.PGHOST,
     database: "mobile-app",
     password: process.env.PGPASSWORD,
-    port: process.env.PGPORT
+    port: process.env.PGPORT ? parseInt(process.env.PGPORT, 10) : 5432
 })
 
-module.exports = {
+export default {
     async query(text: any, params: any) {
         const start = Date.now()
         const res = await pool.query(text, params)
@@ -26,12 +32,12 @@ module.exports = {
             console.error(`The last executed query on this client was: ${client.lastQuery}`)
         }, 5000)
         // monkey patch the query method to keep track of the last query executed
-        client.query = (...args: any[]) => {
+        client.query = (...args: any[]): any => {
             client.lastQuery = args
-            return query.apply(client, args)
+            return query.apply(client, args as any)
         }
         client.release = () => {
-        // clear our timeout
+            // clear our timeout
             clearTimeout(timeout)
             // set the methods back to their old un-monkey-patched version
             client.query = query
