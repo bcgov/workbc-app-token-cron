@@ -16,7 +16,7 @@ objects:
       app.kubernetes.io/component: workbc-app-token-cron
       app.openshift.io/runtime: nodejs
   spec:
-    replicas: 2
+    replicas: 1
     selector:
       deploymentconfig: ${NAME}${SUFFIX}
     template:
@@ -33,24 +33,38 @@ objects:
                 protocol: TCP
             env:
               - name: PGUSER
-                value: ${PGUSER}
+                valueFrom:
+                  secretKeyRef:
+                    key: app-db-username
+                    name: ${PGSECRET_NAME}
+              - name: PGPASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: app-db-password
+                    name: ${PGSECRET_NAME}
               - name: PGHOST
                 value: ${PGHOST}
-              - name: PGPASSWORD
-                value: ${PGPASSWORD}
               - name: PGPORT
                 value: ${PGPORT}
               - name: NOTIFICATIONS_API_URL
                 value: ${NOTIFICATIONS_API_URL}
-              - name: NOTIFICATIONS_API_USER
-                value: ${NOTIFICATIONS_API_USER}
-              - name: NOTIFICATIONS_API_PASS
-                value: ${NOTIFICATIONS_API_PASS}
+              - name:  NOTIFICATIONS_API_USER
+                valueFrom:
+                  secretKeyRef:
+                    key: username
+                    name: ${NOTIFICATIONS_API_SECRET_NAME}
+              - name:  NOTIFICATIONS_API_PASS
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: ${NOTIFICATIONS_API_SECRET_NAME}
             resources:
               limits:
-                cpu: '150m'
+                cpu: 100m
+                memory: 100Mi
               requests:
-                cpu: '100m'
+                cpu: 10m
+                memory: 50Mi
     test: false  
     triggers:
     - type: ConfigChange
@@ -102,19 +116,9 @@ parameters:
   name: IMAGE_NAME
   required: true
   value: workbc-app-token-cron
-- description: Postgres User
-  displayName: Postgres User
-  name: PGUSER
-  required: false
-  value: ''
 - description: Postgres Host
   displayName: Postgres Host
   name: PGHOST
-  required: false
-  value: ''
-- description: Postgres Password
-  displayName: Postgres Password
-  name: PGPASSWORD
   required: false
   value: ''
 - description: Postgres Port
@@ -122,18 +126,18 @@ parameters:
   name: PGPORT
   required: false
   value: ''
+- description: Name of Postgres secret that holds app-db-username and app-db-password
+  displayName: PGSECRET_NAME
+  name: PGSECRET_NAME
+  required: true
+  value: ''
 - description: URL for the mobile app notifications api
   displayName: Notifications URL
   name: NOTIFICATIONS_API_URL
   required: false
   value: ''
-- description: Username for the mobile app notifications api
-  displayName: Notifications User
-  name: NOTIFICATIONS_API_USER
-  required: false
-  value: ''
-- description: Password for the mobile app notifications api
-  displayName: Notifications Password
-  name: NOTIFICATIONS_API_PASS
-  required: false
+- description: The username for the WorkBC Notifications API
+  displayName: Notifications API User
+  name: NOTIFICATIONS_API_SECRET_NAME
+  required: true
   value: ''
